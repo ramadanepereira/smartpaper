@@ -2,12 +2,12 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
 const AuthContext = createContext(null);
-
 const API = 'http://localhost:3001/api';
 
 export function AuthProvider({ children }) {
   const [utilizador, setUtilizador] = useState(null);
   const [carregando, setCarregando] = useState(true);
+  const [darkMode, setDarkMode]     = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('sp_token');
@@ -40,8 +40,12 @@ export function AuthProvider({ children }) {
     setUtilizador(null);
   }
 
+  function toggleDarkMode() {
+    setDarkMode(prev => !prev);
+  }
+
   return (
-    <AuthContext.Provider value={{ utilizador, carregando, login, logout }}>
+    <AuthContext.Provider value={{ utilizador, carregando, login, logout, darkMode, toggleDarkMode }}>
       {children}
     </AuthContext.Provider>
   );

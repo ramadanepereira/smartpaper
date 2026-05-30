@@ -1,36 +1,34 @@
+import logo from '../assets/logo.png';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const navItems = [
-  { path: '/',            icon: '🏠', label: 'Dashboard'    },
-  { path: '/clientes',    icon: '👥', label: 'Clientes'     },
-  { path: '/servicos',    icon: '🖨️', label: 'Serviços'     },
-  { path: '/pedidos',     icon: '📋', label: 'Pedidos'      },
-  { path: '/pagamentos',  icon: '💳', label: 'Pagamentos'   },
-  { path: '/relatorios',  icon: '📊', label: 'Relatórios'   },
+  { path: '/', icon: '🏠', label: 'Dashboard' },
+  { path: '/clientes', icon: '👥', label: 'Clientes' },
+  { path: '/servicos', icon: '🖨️', label: 'Serviços' },
+  { path: '/pedidos', icon: '📋', label: 'Pedidos' },
+  { path: '/pagamentos', icon: '💳', label: 'Pagamentos' },
+  { path: '/relatorios', icon: '📊', label: 'Relatórios' },
 ];
 
 export default function Sidebar() {
-  const navigate  = useNavigate();
-  const location  = useLocation();
-  const { logout, utilizador } = useAuth();
-
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { logout, utilizador, darkMode } = useAuth();
   return (
     <div style={{
-      width: 220, background: '#1E3A5F', display: 'flex',
-      flexDirection: 'column', flexShrink: 0, height: '100vh'
+      width: 220,
+      background: darkMode ? '#0F172A' : '#1E3A5F',
+      display: 'flex', flexDirection: 'column',
+      flexShrink: 0, height: '100vh',
+      borderRight: `1px solid ${darkMode ? '#1E293B' : 'transparent'}`
     }}>
+
       {/* Logo */}
-      <div style={{ padding: '20px 16px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{
-            width: 36, height: 36, background: '#3B82F6', borderRadius: 8,
-            display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18
-          }}>🖨️</div>
-          <div>
-            <div style={{ color: '#fff', fontWeight: 700, fontSize: 15 }}>SmartPaper</div>
-            <div style={{ color: '#93C5FD', fontSize: 10 }}>Gestão Inteligente</div>
-          </div>
+      <div style={{ padding: '16px', borderBottom: '1px solid rgba(255,255,255,0.1)', textAlign: 'center' }}>
+        <img src={logo} alt="SmartPaper" style={{ height: 48, objectFit: 'contain', marginBottom: 4 }} />
+        <div style={{ color: '#93C5FD', fontSize: 9, lineHeight: 1.4 }}>
+          Gestão inteligente de impressão e papelaria
         </div>
       </div>
 
@@ -56,26 +54,39 @@ export default function Sidebar() {
           EXTRAS
         </div>
 
-        <div onClick={() => navigate('/relatorios')} style={{
-          display: 'flex', alignItems: 'center', gap: 10,
-          padding: '9px 16px', margin: '1px 8px', borderRadius: 8,
-          cursor: 'pointer', color: 'rgba(255,255,255,0.6)', fontSize: 13
-        }}>
-          <span>💾</span> Backup
-        </div>
+        {[
+          { icon: '💾', label: 'Backup de Dados' },
+          { icon: '❓', label: 'Ajuda' },
+        ].map(item => (
+          <div key={item.label} style={{
+            display: 'flex', alignItems: 'center', gap: 10,
+            padding: '9px 16px', margin: '1px 8px', borderRadius: 8,
+            cursor: 'pointer', color: 'rgba(255,255,255,0.6)', fontSize: 13
+          }}>
+            <span>{item.icon}</span> {item.label}
+          </div>
+        ))}
       </nav>
-
       {/* Utilizador + Sair */}
-      <div style={{ padding: '12px 16px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-        <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: 11, marginBottom: 8 }}>
-          {utilizador?.nome}
-        </div>
+      <div style={{ padding: '10px 16px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
         <div onClick={logout} style={{
-          display: 'flex', alignItems: 'center', gap: 8,
-          cursor: 'pointer', color: 'rgba(255,255,255,0.6)', fontSize: 13
+          display: 'flex', alignItems: 'center', gap: 10,
+          cursor: 'pointer', color: '#F87171', fontSize: 13,
+          padding: '8px 10px', borderRadius: 8,
+          background: 'rgba(248,113,113,0.08)',
+          transition: 'background 0.15s'
         }}>
-          <span>🚪</span> Sair
+          <span style={{ fontSize: 16 }}>↪️</span> Sair da conta
         </div>
+      </div>
+
+      {/* Dica Rápida */}
+      <div style={{ margin: '8px 10px 14px', background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.25)', borderRadius: 10, padding: '12px' }}>
+        <div style={{ color: '#93C5FD', fontWeight: 600, fontSize: 12, marginBottom: 4 }}>💡 Dica Rápida</div>
+        <div style={{ color: 'rgba(255,255,255,0.65)', fontSize: 11, lineHeight: 1.5, marginBottom: 8 }}>
+          Use relatórios para acompanhar o crescimento do seu negócio.
+        </div>
+        <div style={{ textAlign: 'center', fontSize: 28 }}>📈</div>
       </div>
     </div>
   );

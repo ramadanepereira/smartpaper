@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import { AuthProvider } from './context/AuthContext';
@@ -13,12 +14,40 @@ import Sidebar    from './components/Sidebar';
 import Topbar     from './components/Topbar';
 
 function Layout({ children }) {
+  const { darkMode } = useAuth();
+  const [sidebarAberta, setSidebarAberta] = useState(true);
+
   return (
     <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
-      <Sidebar />
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        <Topbar />
-        <main style={{ flex: 1, overflowY: 'auto', background: '#F8FAFC', padding: '24px' }}>
+      {/* Overlay mobile */}
+      {!sidebarAberta ? null : (
+        <div
+          onClick={() => setSidebarAberta(false)}
+          style={{
+            display: 'none',
+            position: 'fixed', inset: 0,
+            background: 'rgba(0,0,0,0.5)', zIndex: 40
+          }}
+          className="sidebar-overlay"
+        />
+      )}
+
+      {/* Sidebar */}
+      <div style={{
+        width: sidebarAberta ? 220 : 0,
+        overflow: 'hidden',
+        transition: 'width 0.25s ease',
+        flexShrink: 0
+      }}>
+        <Sidebar />
+      </div>
+
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minWidth: 0 }}>
+        <Topbar onToggleSidebar={() => setSidebarAberta(!sidebarAberta)} />
+        <main style={{
+          flex: 1, overflowY: 'auto', padding: '24px',
+          background: darkMode ? '#0F172A' : '#F8FAFC'
+        }}>
           {children}
         </main>
       </div>
