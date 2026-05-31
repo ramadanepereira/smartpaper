@@ -1,5 +1,5 @@
 const express = require('express');
-const db      = require('../database');
+const db = require('../database');
 
 const router = express.Router();
 
@@ -69,7 +69,7 @@ router.post('/', (req, res) => {
     return res.status(400).json({ erro: 'O pedido precisa de pelo menos um item' });
 
   const numero = gerarNumeroPedido();
-  const total  = itens.reduce((sum, item) => sum + (item.quantidade * item.preco_unit), 0);
+  const total = itens.reduce((sum, item) => sum + (item.quantidade * item.preco_unit), 0);
 
   const inserirPedido = db.prepare(`
     INSERT INTO pedidos (numero, cliente_id, nome_cliente, total, observacoes, criado_por)
@@ -135,4 +135,11 @@ router.delete('/:id', (req, res) => {
   res.json({ mensagem: 'Pedido cancelado com sucesso' });
 });
 
+// PUT /api/pedidos/:id/observacoes
+router.put('/:id/observacoes', (req, res) => {
+  const { observacoes } = req.body;
+  db.prepare(`UPDATE pedidos SET observacoes = ?, atualizado_em = datetime('now') WHERE id = ?`)
+    .run(observacoes || null, req.params.id);
+  res.json({ mensagem: 'Observações actualizadas' });
+});
 module.exports = router;
